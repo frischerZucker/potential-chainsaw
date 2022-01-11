@@ -1,13 +1,17 @@
-#string that stores the code
-src = "+++[>+<-]>."
+import time
 
+#string that stores the code
+src = "+++++[>+++++[>++++>++++<<-]>+++>+<<<-]>>.>...<++......."
+
+#data array
 array = [0] * 30000
+#pointer that keeps track of the active cell of the array
 pointer = 0
 
-#set to 1 to print out additional info while interpreting the code
-info = 1
+#set to 1 to print out additional info while interpreting the code and to sleep for .5s between every command
+info = 0
 
-def aaa(pointer, array, input):
+def interpret_bf(pointer, array, input):
 	x = 0
 	while x < len(input):
 		if input[x] == "+":
@@ -27,8 +31,11 @@ def aaa(pointer, array, input):
 		
 		elif input[x] == "<":
 			if info == 1:
-				print("< -> decrease pointer by 1")
+				print("< -> decrease pointer by 1 to ", pointer - 1)
 			pointer -= 1
+
+			if pointer < 0:
+				pointer = 0
 		
 		elif input[x] == "[":
 			if info == 1:
@@ -44,16 +51,27 @@ def aaa(pointer, array, input):
 
 			loop_length = 0
 
+			#counts how many loops are inside of the current loop
+			loop_counter = 0
+
 			#searches the next ], adds all the commands before it to looped_code and sets loop_length
 			for b in range(len(input) - start_pos):
+				#increases loop_counter if the start of an inner loop is found
+				if input[start_pos + b] == "[":
+					loop_counter += 1
+
 				if input[start_pos + b] == "]":
-					break
+					if loop_counter == 0:
+						break
+					#decreases loop_counter if the end of an inner loop is found
+					else:
+						loop_counter -= 1
 				looped_code += input[start_pos + b]
 				loop_length = b + 1
 			
 			#executes the code inside of the loop as long as temp > 0
 			while array[pointer] > 0:
-				aaa(pointer, array, looped_code)
+				interpret_bf(pointer, array, looped_code)
 
 			#jumps to the end of the loop, so that the looped code wont be executed again
 			x += loop_length
@@ -66,7 +84,7 @@ def aaa(pointer, array, input):
 		elif input[x] == ".":
 			if info == 1:
 				print(". -> print cell", pointer)
-			print(array[pointer])
+			print(chr(array[pointer]), end = "")
 		
 		elif input[x] == ",":
 			if info == 1:
@@ -75,4 +93,9 @@ def aaa(pointer, array, input):
 
 		x += 1
 
-aaa(pointer, array, src)
+		if info == 1:
+			time.sleep(.2)
+
+interpret_bf(pointer, array, src)
+
+f = input("")
