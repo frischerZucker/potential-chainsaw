@@ -1,4 +1,3 @@
-[
 +++++				set cell0 to 5
 [				loop until cell0 is 0
 	>+++++			set cell1 to 5
@@ -12,4 +11,3 @@
 >>.				print cell2
 >...				print cell3 3 times
 <++.......			decrease cell2 by 2; print cell2 7 times 
-]

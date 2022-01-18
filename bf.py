@@ -3,8 +3,11 @@ import time
 #string that stores the code
 src = "+++++[>+++++[>++++>++++<<-]>+++>+<<<-]>>.>...<++......."
 
+#size of the data array
+array_length = 30000
+
 #data array
-array = [0] * 30000
+array = [0] * array_length
 #pointer that keeps track of the active cell of the array
 pointer = 0
 
@@ -18,24 +21,29 @@ def interpret_bf(pointer, array, input):
 			if info == 1:
 				print("+ -> add 1 to cell", pointer)
 			array[pointer] += 1
+			if array[pointer] > 255:
+				array[pointer] = 0
 
 		elif input[x] == "-":
 			if info == 1:
 				print("- -> substract 1 from cell", pointer)
 			array[pointer] -= 1
+			if array[pointer] < 0:
+				array[pointer] = 255
 		
 		elif input[x] == ">":
 			if info == 1:
 				print("> -> increase pointer by 1")
 			pointer += 1
+			if pointer >= array_length:
+				pointer = 0
 		
 		elif input[x] == "<":
 			if info == 1:
 				print("< -> decrease pointer by 1 to ", pointer - 1)
 			pointer -= 1
-
 			if pointer < 0:
-				pointer = 0
+				pointer = array_length - 1
 		
 		elif input[x] == "[":
 			if info == 1:
@@ -84,7 +92,7 @@ def interpret_bf(pointer, array, input):
 		elif input[x] == ".":
 			if info == 1:
 				print(". -> print cell", pointer)
-			print(chr(array[pointer]), end = "")
+			print(chr(array[pointer]), end="")
 		
 		elif input[x] == ",":
 			if info == 1:
